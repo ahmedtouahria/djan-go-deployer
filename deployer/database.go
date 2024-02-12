@@ -1,8 +1,14 @@
 package deployer
 
+import (
+	"database/sql"
+	"fmt"
+	"os"
+)
+
 // Database represents a database configuration.
-type Database struct{
-	name string
+type Database struct {
+	name     string
 	password string
 	username string
 }
@@ -40,3 +46,31 @@ func (b *DatabaseBuilder) Build() Database {
 	return b.database
 }
 
+const (
+	host     = "localhost"
+	port     = 5432
+	user     = "your_username"
+	password = "your_password"
+	dbname   = "your_database"
+)
+
+func createDatabase() error {
+	connStr := fmt.Sprintf("host=%s port=%d user=%s password=%s sslmode=disable", host, port, user, password)
+	db, err := sql.Open("postgres", connStr)
+	if err != nil {
+		return err
+	}
+	defer db.Close()
+
+	// Connect to the default PostgreSQL database to create a new database
+	_, err = db.Exec(fmt.Sprintf("CREATE DATABASE %s;", dbname))
+	if err != nil {
+		return err
+	}
+
+	_, err = fmt.Fprintf(os.Stdout, "Database '%s' created successfully.\n", []any{dbname}...)
+	if err != nil {
+		return err
+	}
+	return nil
+}

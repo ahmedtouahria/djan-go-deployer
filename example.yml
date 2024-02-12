@@ -1,0 +1,11 @@
+environment:
+  - DB_NAME: test
+  - DB_USER: test
+  - DB_PASSWORD: test
+  - DB_HOST: test
+  - DB_PORT: test
+nginx:
+  - ssl:false
+  - secure:false # Be careful ! this option will implement all security practices and settings in your web server configuration
+
+

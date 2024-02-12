@@ -1,39 +1,35 @@
 package main
 
 import (
+	"django_deployer/deployer"
 	"flag"
 	"fmt"
-	//"os"
+	"log"
+
 )
 
 func main() {
-	var name string
-	var age int
-	var greet bool
+	var conf string
 
 	// Define command-line flags
-	flag.StringVar(&name, "name", "Guest", "Specify a name")
-	flag.IntVar(&age, "age", 0, "Specify an age")
-	flag.BoolVar(&greet, "greet", false, "Enable greeting message")
-
-	// Parse command-line arguments
+	flag.StringVar(&conf, "conf", "deployer.yaml", "Set your YAML configuration file")
 	flag.Parse()
 
-	// Perform actions based on flags
-	if greet {
-		_, err := fmt.Printf("Hello, %s!\n", name)
-		if err != nil {
-			
-			
-		}
-		if age > 0 {
-			_, err := fmt.Printf("You are %d years old.\n", age)
-			if err != nil {
-				panic(err)
-			}
-		}
-	} else {
-		fmt.Println("No greeting enabled.")
+	// Check if the configuration file is specified
+	if conf == ""{
+		log.Fatal("Configuration file must be specified")
+	}
+
+	// Install dependencies
+	// deployer.DependenciesInstaller()
+
+	// Install PM2 process manager
+	//deployer.Pm2ProccessManagerInstaller()
+	confYaml := deployer.ReadYamlFile("/home/ahmed/Desktop/projects/GoLang/django_deployer/example.yml")
+	fmt.Println(confYaml)
+	_, err := fmt.Printf("Hello, %s!\n", conf)
+	if err != nil {
+		panic(err)
 	}
 
 	// Additional logic can be added based on the flag values.
