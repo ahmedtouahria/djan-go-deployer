@@ -14,7 +14,7 @@ func DependenciesInstaller() {
 	}
 
 	// Install required packages
-	if err := RunCommand("sudo", "apt", "install", "python3-venv", "python3-dev", "libpq-dev", "postgresql", "postgresql-contrib", "nginx", "curl"); err != nil {
+	if err := RunCommand("sudo", "apt", "install", "python3-venv", "python3-dev", "libpq-dev", "postgresql", "postgresql-contrib", "nginx", "curl","nodejs","npm"); err != nil {
 		fmt.Println("Error installing packages:", err)
 		return
 	}

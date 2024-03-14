@@ -8,8 +8,8 @@ import (
 type NGINXConfig struct {
 	ServerName  string
 	ListenPort  int
+	DjangoPort  int
 	RootDir     string
-	LogFilePath string
 }
 
 // CreateNGINXConf generates NGINX configuration based on the provided NGINXConfig.
@@ -18,13 +18,19 @@ func CreateNGINXConf(config NGINXConfig) (string, error) {
     listen {{.ListenPort}};
     server_name {{.ServerName}};
 
-    access_log {{.LogFilePath}}/access.log;
-    error_log {{.LogFilePath}}/error.log;
+    location /static/ {
+        root {{.RootDir}};
+    }
+
+    location /media/ {
+        root {{.RootDir}};
+        }
 
     location / {
-        root   {{.RootDir}};
-        index  index.html index.htm;
+        include proxy_params;
+        proxy_pass http://localhost:{{.DjangoPort}};
     }
+
 }`
 
 	t, err := template.New("nginx").Parse(tmpl)
@@ -40,3 +46,4 @@ func CreateNGINXConf(config NGINXConfig) (string, error) {
 
 	return buf.String(), nil
 }
+

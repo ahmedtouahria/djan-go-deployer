@@ -47,15 +47,15 @@ func (b *DatabaseBuilder) Build() Database {
 }
 
 const (
-	host     = "localhost"
-	port     = 5432
-	user     = "your_username"
-	password = "your_password"
-	dbname   = "your_database"
+	Host     = "localhost"
+	Port     = 5432
+	User     = "your_username"
+	Password = "your_password"
+	Dbname   = "your_database"
 )
 
 func createDatabase() error {
-	connStr := fmt.Sprintf("host=%s port=%d user=%s password=%s sslmode=disable", host, port, user, password)
+	connStr := fmt.Sprintf("host=%s port=%d user=%s password=%s sslmode=disable", Host, Port, User, Password)
 	db, err := sql.Open("postgres", connStr)
 	if err != nil {
 		return err
@@ -63,12 +63,12 @@ func createDatabase() error {
 	defer db.Close()
 
 	// Connect to the default PostgreSQL database to create a new database
-	_, err = db.Exec(fmt.Sprintf("CREATE DATABASE %s;", dbname))
+	_, err = db.Exec(fmt.Sprintf("CREATE DATABASE %s;", Dbname))
 	if err != nil {
 		return err
 	}
 
-	_, err = fmt.Fprintf(os.Stdout, "Database '%s' created successfully.\n", []any{dbname}...)
+	_, err = fmt.Fprintf(os.Stdout, "Database '%s' created successfully.\n", []any{Dbname}...)
 	if err != nil {
 		return err
 	}
