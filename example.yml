@@ -1,19 +1,15 @@
-envirement:
-  - DB_NAME: test
-  - DB_USER: test
-  - DB_PASSWORD: test
-  - DB_HOST: test
-  - DB_PORT: test
-  - DJANGO_SECRET: secret
-  - ALLOWED_HOSTS: 127.0.0.1,localhost
-  #...
-  #  Add your .env variables as you need
-  #....
-nginx:
-  - SSL: false
-  - SECURE: false # Be careful ! this option will implement all security practices and settings in your web server configurations
-  - NGINX_PORT: 80 # Nginx port
-  - DJANGO_PORT: 8000 # Django process port
-  - DJANGO_DIRECTORY: /home/user/project # Django directory, must be containing a requirements.txt file
-  - ALLOWED_HOSTS: example.com example2.com # DNS or IP address
-  - INCLUDE_CHANNELS: false # That's mean if you're using channels in your django project
+#Nginx 
+DB_NAME: test
+DB_USER: test
+DB_PASSWORD: test
+DB_HOST: test
+DB_PORT: test
+DJANGO_SECRET: secret
+ALLOWED_HOSTS: 127.0.0.1,localhost
+
+SSL: false
+SECURE: false # Be careful ! this option will implement all security practices and settings in your web server configurations
+NGINX_PORT: 80 # Nginx port
+DJANGO_PORT: 8000 # Django process port
+DJANGO_DIRECTORY: /home/user/project # Django directory, must be containing a requirements.txt file
+INCLUDE_CHANNELS: false # That's mean if you're using channels in your django project

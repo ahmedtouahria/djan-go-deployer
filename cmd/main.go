@@ -18,31 +18,30 @@ func main() {
 		log.Fatal("Configuration file must be specified using the -conf flag")
 	}
 
-	// Read the YAML file
-	confYaml := deployer.ReadYamlFile(conf)
-	fmt.Println(confYaml)
+	data, err := deployer.ReadYamlFile(conf)
+	if err != nil {
+		panic(err)
+	  }
+	deployer.Installer() // Install all dependencies
 
-	// Access and print the Environment section
-	env, ok := confYaml["envirement"].([]any)
-	if !ok {
-		log.Fatal("Invalid format for 'envirement' section")
-	}
-	fmt.Println("Environment:")
-	for _, e := range env {
-		for k, v := range e.(map[any]any) {
-			fmt.Printf("- %s: %s\n", k, v)
-		}
+	//creating Database
+	//...........
+	// creating pm2 scripts 
+	//...........
+	//creating nginx configurations files
+	//...........
+	//SSL Certificate
+	
+
+	key:="DB_NAME"
+	// Get the value for a specific key
+	value, found := deployer.GetByKey(data,key)
+	if found {
+		fmt.Println("DB_NAME:", value)
+	} else {
+		fmt.Println("Key 'envirement.DB_NAME' not found")
 	}
 
-	// Access and print the Nginx section
-	nginx, ok := confYaml["nginx"].([]any)
-	if !ok {
-		log.Fatal("Invalid format for 'nginx' section")
-	}
-	fmt.Println("\nNginx:")
-	for _, n := range nginx {
-		for k, v := range n.(map[any]any) {
-			fmt.Printf("- %s: %s\n", k, v)
-		}
-	}
+	fmt.Printf("Value for key %q: %v\n", key, value)
 }
+

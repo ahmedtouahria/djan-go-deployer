@@ -4,6 +4,8 @@ import (
 	"fmt"
 	"os"
 	"os/exec"
+	"strings"
+
 	"gopkg.in/yaml.v2"
 )
 
@@ -15,22 +17,41 @@ func RunCommand(command string, args ...string) error {
 	return cmd.Run()
 }
 // ReadYamlFile is a function that reads a YAML file
-func ReadYamlFile(configFile string) map[string]any{
+func ReadYamlFile(configFile string) (map[string]any, error) {
+	data, err := os.ReadFile(configFile)
+	if err != nil {
+	  return nil, fmt.Errorf("ReadFile: %w", err)
+	}
+	
 	obj := make(map[string]any)
-	yamlFile, err := os.ReadFile(configFile)
+	err = yaml.Unmarshal(data, obj)
 	if err != nil {
-		_, err = fmt.Printf("yamlFile.Get err #%v ", err)
-		if err != nil {
-			panic(err)
-		}
+	  return nil, fmt.Errorf("Unmarshal: %w", err)
 	}
-	err = yaml.Unmarshal(yamlFile, obj)
-	if err != nil {
-		_, err = fmt.Printf("Unmarshal: %v", err)
-		if err != nil {
-			panic(err)
-		}
-	}
+	
+	return obj, nil
+  }
 
-	return obj
-}
+
+// GetByKey retrieves a specific key from the parsed YAML data
+func GetByKey(data map[string]any, key string) (interface{}, bool) {
+	// Handle nested keys with recursion
+	parts := strings.Split(key, ".")
+	value, ok := data[parts[0]]
+	if !ok {
+	  return nil, false
+	}
+	
+	if len(parts) == 1 {
+	  return value, true
+	}
+	
+	// Recursively navigate through nested maps
+	m, ok := value.(map[string]any)
+	if !ok {
+	  return nil, false // Key points to a non-map value
+	}
+	
+	return GetByKey(m, strings.Join(parts[1:], "."))
+  }
+  

@@ -14,7 +14,7 @@ func DependenciesInstaller() {
 	}
 
 	// Install required packages
-	if err := RunCommand("sudo", "apt", "install", "python3-venv", "python3-dev", "libpq-dev", "postgresql", "postgresql-contrib", "nginx", "curl","nodejs","npm"); err != nil {
+	if err := RunCommand("sudo", "apt", "install", "python3-venv", "python3-dev", "libpq-dev", "postgresql", "postgresql-contrib", "nginx", "curl","nodejs","npm","supervisor"); err != nil {
 		fmt.Println("Error installing packages:", err)
 		return
 	}
@@ -44,3 +44,9 @@ func Pm2ProccessManagerInstaller() {
 
 
 
+// Installer is used to install all dependencies and requirements
+func Installer(){
+DependenciesInstaller() // Install dependencies
+ProjectRequirementInstaller() // Install requirements.txt
+Pm2ProccessManagerInstaller() // Install PM2 
+}
