@@ -76,11 +76,12 @@ func main() {
 		panic(found)
 
 	}
-
+	
 	err=deployer.BuildNginxFile(content,projectName)
 	if err != nil {
 		panic(err)
 	}
+
 	// restart nginx server
 	err = deployer.RerstartNginxServer()
 	if err != nil {
