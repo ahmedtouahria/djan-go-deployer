@@ -65,3 +65,10 @@ func GetByKey(data map[string]interface{}, key string) (string, bool) {
 }
 
 
+func CreateFile(filename string, content string) error {
+	err := os.WriteFile(filename, []byte(content), 0755)
+	if err != nil {
+		return err
+	}
+	return nil
+}

@@ -5,16 +5,10 @@ package deployer
 import (
 	"django_deployer/server"
 	"fmt"
-	"os"
+
 )
 
-func CreateBashScript(filename string, content string) error {
-	err := os.WriteFile(filename, []byte(content), 0755)
-	if err != nil {
-		return err
-	}
-	return nil
-}
+
 
 func CreatePM2App(conf string) error {
 	data, err := server.ReadYamlFile(conf)
@@ -45,7 +39,7 @@ func CreatePM2App(conf string) error {
 		python manage.py runserver 0.0.0.0:` + port
 
 	// Create the Bash script file
-	err = CreateBashScript(fileName, scriptContent)
+	err = server.CreateFile(fileName, scriptContent)
 	if err != nil {
 		fmt.Println("Error:", err)
 		return err
@@ -63,12 +57,20 @@ func CreatePM2ChannelsApp(fileName string, directory string) {
 		daphne -b 0.0.0.0 -p 8001 core.asgi:application
 				`
 	// Create the Bash script file
-	err := CreateBashScript(fileName, scriptContent)
+	err := server.CreateFile(fileName, scriptContent)
 	if err != nil {
 		fmt.Println("Error:", err)
 		return
 	}
 
 	fmt.Println("PM2 app script file for channels created successfully:", fileName)
+}
+
+func RestartPm2Process()error{
+	err:=server.RunCommand("pm2","restart","all")
+	if err==nil {
+		fmt.Println("\x1b[32mPM2 processes restarted successfully\x1b[0m") // "\x1b[32m" for green color, "\x1b[0m" to reset color
+	}
+	return err	
 }
 

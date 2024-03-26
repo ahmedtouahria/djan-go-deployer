@@ -1,49 +1,72 @@
 package deployer
+
 import (
-	"bytes"
-	"html/template"
+	"django_deployer/server"
+	"fmt"
 )
-// CreateNgixConf creates a ngix configuration and return path
-// NGINXConfig represents the NGINX configuration.
-type NGINXConfig struct {
-	ServerName  string
-	ListenPort  int
-	DjangoPort  int
-	RootDir     string
-}
 
 // CreateNGINXConf generates NGINX configuration based on the provided NGINXConfig.
-func CreateNGINXConf(config NGINXConfig) (string, error) {
+func CreateNGINXConf(data map[string]interface{}) (error,string) {
+	ServerName,ok:=server.GetByKey(data,"ALLOWED_HOSTS")
+	if !ok {
+		return fmt.Errorf("Invalid server name key"),""
+	}
+	ListenPort,ok:=server.GetByKey(data,"NGINX_PORT")
+	if !ok {
+		return fmt.Errorf("Invalid NGINX_PORT key"),""
+	}
+	RootDir,ok:=server.GetByKey(data,"DJANGO_DIRECTORY")
+	if !ok {
+		return fmt.Errorf("Invalid DJANGO_DIRECTORY key"),""
+	}
+	DjangoPort,ok:=server.GetByKey(data,"DJANGO_PORT")
+	if !ok {
+		return fmt.Errorf("Invalid DJANGO_PORT key"),""
+	}
+
+	// Define the template
 	tmpl := `server {
-    listen {{.ListenPort}};
-    server_name {{.ServerName}};
+    listen %s;
+    server_name %s;
 
     location /static/ {
-        root {{.RootDir}};
+        root %s;
     }
 
     location /media/ {
-        root {{.RootDir}};
-        }
+        root %s;
+    }
 
     location / {
         include proxy_params;
-        proxy_pass http://localhost:{{.DjangoPort}};
+        proxy_pass http://localhost:%s;
     }
-
 }`
 
-	t, err := template.New("nginx").Parse(tmpl)
-	if err != nil {
-		return "", err
-	}
+	nginxConf := fmt.Sprintf(tmpl, ListenPort, ServerName, RootDir, RootDir, DjangoPort)
+	return nil,nginxConf
 
-	var buf bytes.Buffer
-	err = t.Execute(&buf, config)
-	if err != nil {
-		return "", err
-	}
-
-	return buf.String(), nil
 }
 
+// BuildNginxFile builds the file
+func BuildNginxFile(template string,file_name string) error {
+	err := server.CreateFile("/etc/nginx/sites-available/"+file_name,template)
+	if err != nil {
+		return err
+	}
+	return nil
+}
+
+// RerstartNginxServer it is a helper function to restart the nginx server
+func RerstartNginxServer() error {
+	err:=server.RunCommand("sudo","service","nginx","restart")
+	if err==nil {
+		fmt.Println("\x1b[32mNginx server restarted successfully\x1b[0m") // "\x1b[32m" for green color, "\x1b[0m" to reset color
+	}
+	return err	
+}
+
+func SetSSLCert() error {
+	err:=server.RunCommand("sudo","certbot")
+	return err		
+}
