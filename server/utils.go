@@ -4,6 +4,7 @@ import (
 	"fmt"
 	"os"
 	"os/exec"
+
 	"strings"
 
 	"gopkg.in/yaml.v2"
@@ -38,30 +39,36 @@ func ReadYamlFile(configFile string) (map[string]any, error) {
 // GetByKey retrieves a specific key from the parsed YAML data
 
 func GetByKey(data map[string]interface{}, key string) (string, bool) {
-    // Handle nested keys with recursion
-    parts := strings.Split(key, ".")
-    value, ok := data[parts[0]]
-    if !ok {
-        return "", false
-    }
-    
-    if len(parts) == 1 {
-        // Convert the value to string
-        stringValue, ok := value.(string)
-        if !ok {
-            // If the value is not a string, return an empty string
-            return "", false
-        }
-        return stringValue, true
-    }
-    
-    // Recursively navigate through nested maps
-    m, ok := value.(map[string]interface{})
-    if !ok {
-        return "", false // Key points to a non-map value
-    }
-    
-    return GetByKey(m, strings.Join(parts[1:], "."))
+	// Handle nested keys with recursion
+	parts := strings.Split(key, ".")
+
+	value, ok := data[parts[0]]
+	if !ok {
+		return "", false
+	}
+
+	if len(parts) == 1 {
+
+
+		// Convert the value to string
+		stringValue, ok := value.(string)
+		if !ok {
+			// If the value is not a string, return an empty string
+			return "", false
+		}
+
+		return stringValue, true
+	}
+	fmt.Println(parts[1])
+	// Recursively navigate through nested maps
+	m, ok := value.(map[string]interface{})
+	fmt.Println(m)
+
+	if !ok {
+		return "", false // Key points to a non-map value
+	}
+
+	return GetByKey(m, parts[1])
 }
 
 

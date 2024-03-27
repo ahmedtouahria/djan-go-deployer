@@ -21,6 +21,7 @@ func main() {
 	}
 
 	data, err := server.ReadYamlFile(conf)
+	fmt.Println(data)
 	if err != nil {
 		panic(err)
 	  }
@@ -56,7 +57,7 @@ func main() {
 	}
 	// creating pm2 scripts 
 
-	err = deployer.CreatePM2App(conf)
+/* 	err = deployer.CreatePM2App(conf)
 	if err != nil {
 		panic(err)
 	}
@@ -65,6 +66,7 @@ func main() {
 	if err != nil {
 		panic(err)
 	}
+ */
 	//creating nginx configurations files
 	err,content:=deployer.CreateNGINXConf(data)
 	if err != nil {
@@ -87,6 +89,7 @@ func main() {
 	if err != nil {
 		panic(err)
 	}
+
 	//SSL Certificate
 	err = deployer.SetSSLCert()
 	if err != nil {

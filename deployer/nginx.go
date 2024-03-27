@@ -27,8 +27,8 @@ func CreateNGINXConf(data map[string]interface{}) (error, string) {
 		return fmt.Errorf("invalid DJANGO_PORT key"), ""
 	}
 	IncludeChannles, ok := server.GetByKey(data, "INCLUDE_CHANNELS")
-	if !ok || IncludeChannles == "false" {
-		fmt.Println("Create app without DAPHNE WS server")
+	if !ok ||  IncludeChannles == "false" {
+		fmt.Println("Creating app without DAPHNE WS server ................")
 		tmpl = `server {
 			listen %s;
 			server_name %s;
@@ -47,7 +47,9 @@ func CreateNGINXConf(data map[string]interface{}) (error, string) {
 			}
 		}`
 		nginxConf = fmt.Sprintf(tmpl, ListenPort, ServerName, RootDir, RootDir, DjangoPort)
-	} else {
+	} else if IncludeChannles == "true" {
+		fmt.Println("Creating app with DAPHNE WS server ................")
+
 		// Define the template
 		ChannelsPort, ok := server.GetByKey(data, "CHANNELS_PORT")
 		if !ok {
