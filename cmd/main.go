@@ -26,7 +26,7 @@ func main() {
 		panic(err)
 	  }
 
-	//deployer.Installer() // Install all dependencies
+	deployer.Installer() // Install all dependencies
 	// Create database
 	mydatabase,found:=server.GetByKey(data,"DB_NAME")
 
@@ -57,7 +57,7 @@ func main() {
 	}
 	// creating pm2 scripts 
 
-/* 	err = deployer.CreatePM2App(conf)
+ 	err = deployer.CreatePM2App(conf)
 	if err != nil {
 		panic(err)
 	}
@@ -66,7 +66,7 @@ func main() {
 	if err != nil {
 		panic(err)
 	}
- */
+ 
 	//creating nginx configurations files
 	err,content:=deployer.CreateNGINXConf(data)
 	if err != nil {
